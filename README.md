@@ -1,2 +1,2 @@
 # code-generator
-a generator for any code type
+the generator for any code type
