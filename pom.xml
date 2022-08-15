@@ -9,7 +9,7 @@
     <groupId>com.wfr.code</groupId>
     <artifactId>code-generator</artifactId>
     <version>1.0.0-SNAPSHOT</version>
-    <description>做一个可以支持各种需求的代码生成器</description>
+    <description>可以支持各种需求的代码生成器</description>
 
     <modules>
     </modules>
