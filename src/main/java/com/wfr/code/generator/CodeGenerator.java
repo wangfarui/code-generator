@@ -38,6 +38,8 @@ public abstract class CodeGenerator {
         final String mapperOutDir;
         // 父包名
         final String packageName;
+        // 输出文件的路径
+        final Map<OutputFile, String> pathInfoMap = new HashMap<>();
 
         if (StringUtils.isBlank(globalConfig.getOutputDir())) {
             outDir = CURRENT_CLASS.getResource("").getPath();
@@ -57,7 +59,6 @@ public abstract class CodeGenerator {
             packageName = globalConfig.getPackageName();
         }
 
-        Map<OutputFile, String> pathInfoMap = new HashMap<>();
         pathInfoMap.put(OutputFile.entity, outDir + "\\entity");
         pathInfoMap.put(OutputFile.mapper, outDir + "\\mapper");
         pathInfoMap.put(OutputFile.xml, mapperOutDir);
@@ -67,19 +68,18 @@ public abstract class CodeGenerator {
 
         FastAutoGenerator.create(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())
                 .globalConfig(builder -> {
-                    builder.author(globalConfig.getAuthor()) // 设置作者
-                            .disableOpenDir()
+                    if (StringUtils.isNotBlank(globalConfig.getAuthor())) {
+                        builder.author(globalConfig.getAuthor());
+                    }
+                    builder.disableOpenDir()
                             .fileOverride() // 覆盖已生成文件
                             .outputDir(outDir); // 指定输出目录
                 })
                 .packageConfig(builder -> {
                     builder.parent(packageName) // 设置父包名
-                            .pathInfo(pathInfoMap)
-                    ; // 设置mapperXml生成路径
+                            .pathInfo(pathInfoMap); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
-                    builder.addInclude("platform_user") // 设置需要生成的表名
-                            .addTableSuffix(); // 设置过滤表前缀
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
                 .execute();
