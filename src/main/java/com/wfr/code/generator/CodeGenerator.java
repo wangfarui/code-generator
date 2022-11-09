@@ -59,12 +59,14 @@ public abstract class CodeGenerator {
             packageName = globalConfig.getPackageName();
         }
 
-        pathInfoMap.put(OutputFile.entity, outDir + "\\entity");
-        pathInfoMap.put(OutputFile.mapper, outDir + "\\mapper");
+        String dirSeparator = globalConfig.getDirSeparator();
+
+        pathInfoMap.put(OutputFile.entity, outDir + dirSeparator + "entity");
+        pathInfoMap.put(OutputFile.mapper, outDir + dirSeparator + "mapper");
         pathInfoMap.put(OutputFile.xml, mapperOutDir);
-        pathInfoMap.put(OutputFile.service, outDir + "\\service");
-        pathInfoMap.put(OutputFile.serviceImpl, outDir + "\\service\\impl");
-        pathInfoMap.put(OutputFile.controller, outDir + "\\controller");
+        pathInfoMap.put(OutputFile.service, outDir + dirSeparator + "service");
+        pathInfoMap.put(OutputFile.serviceImpl, outDir + dirSeparator + "service" + dirSeparator + "impl");
+        pathInfoMap.put(OutputFile.controller, outDir + dirSeparator + "controller");
 
         FastAutoGenerator.create(dbConfig.getUrl(), dbConfig.getUsername(), dbConfig.getPassword())
                 .globalConfig(builder -> {

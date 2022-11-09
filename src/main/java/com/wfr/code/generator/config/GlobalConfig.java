@@ -15,6 +15,12 @@ public class GlobalConfig {
     private String outputDir;
 
     /**
+     * 目录分隔符
+     * <p>默认为windows分隔符, linux需要设置为/</p>
+     */
+    private String dirSeparator = "\\";
+
+    /**
      * java文件包名
      * <p>format: a.b.c
      * <p>为空时, 默认使用 outputDir 作为包名
@@ -28,6 +34,10 @@ public class GlobalConfig {
 
     public String getOutputDir() {
         return outputDir;
+    }
+
+    public String getDirSeparator() {
+        return dirSeparator;
     }
 
     public String getPackageName() {
@@ -56,6 +66,11 @@ public class GlobalConfig {
 
         public Builder setOutputDir(String outputDir) {
             this.globalConfig.outputDir = outputDir;
+            return this;
+        }
+
+        public Builder setDirSeparator(String dirSeparator) {
+            this.globalConfig.dirSeparator = dirSeparator;
             return this;
         }
 
