@@ -75,13 +75,21 @@ public abstract class CodeGenerator {
                     }
                     builder.disableOpenDir()
                             .fileOverride() // 覆盖已生成文件
-                            .outputDir(outDir); // 指定输出目录
+                            .outputDir(outDir) // 指定输出目录
+                            .enableSwagger();
                 })
                 .packageConfig(builder -> {
                     builder.parent(packageName) // 设置父包名
                             .pathInfo(pathInfoMap); // 设置mapperXml生成路径
                 })
                 .strategyConfig(builder -> {
+                    builder.entityBuilder()
+                            .disableSerialVersionUID()
+                            .enableLombok();
+                    builder.controllerBuilder()
+                            .enableRestStyle();
+                    builder.mapperBuilder()
+                            .enableMapperAnnotation();
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
                 .execute();
