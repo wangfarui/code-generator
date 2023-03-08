@@ -1,5 +1,7 @@
 package com.wfr.code.generator.config;
 
+import java.io.File;
+
 /**
  * 全局配置
  *
@@ -16,9 +18,9 @@ public class GlobalConfig {
 
     /**
      * 目录分隔符
-     * <p>默认为windows分隔符, linux需要设置为/</p>
+     * <p>默认采用系统目录分隔符</p>
      */
-    private String dirSeparator = "\\";
+    private String dirSeparator = File.separator;
 
     /**
      * java文件包名

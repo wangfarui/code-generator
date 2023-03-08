@@ -3,15 +3,15 @@ package com.wfr.code.generator;
 import com.baomidou.mybatisplus.generator.FastAutoGenerator;
 import com.baomidou.mybatisplus.generator.config.OutputFile;
 import com.baomidou.mybatisplus.generator.engine.FreemarkerTemplateEngine;
-import com.wfr.code.generator.config.DbConfig;
-import com.wfr.code.generator.config.DbType;
-import com.wfr.code.generator.config.GlobalConfig;
+import com.wfr.code.generator.config.*;
 import com.wfr.code.generator.utils.StringUtils;
 import com.wfr.code.generator.utils.SystemUtils;
+import org.springframework.lang.NonNull;
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 /**
  * 代码自动生成器
@@ -30,7 +30,11 @@ public abstract class CodeGenerator {
         MAPPER_URI = "resources" + separator + "mapper";
     }
 
-    public static void generate(DbConfig dbConfig, GlobalConfig globalConfig) {
+    public static void generate(@NonNull DbConfig dbConfig, @NonNull GlobalConfig globalConfig, @NonNull TableConfig tableConfig) {
+        generate(dbConfig, globalConfig, tableConfig, FileStrategy.COVER);
+    }
+
+    public static void generate(@NonNull DbConfig dbConfig, @NonNull GlobalConfig globalConfig, @NonNull TableConfig tableConfig, FileStrategy fileStrategy) {
 
         // 输出目录
         final String outDir;
@@ -42,9 +46,12 @@ public abstract class CodeGenerator {
         final Map<OutputFile, String> pathInfoMap = new HashMap<>();
 
         if (StringUtils.isBlank(globalConfig.getOutputDir())) {
-            outDir = CURRENT_CLASS.getResource("").getPath();
+            outDir = Objects.requireNonNull(CURRENT_CLASS.getResource("")).getPath();
         } else {
             outDir = globalConfig.getOutputDir();
+            if (FileStrategy.NEW.equals(fileStrategy)) {
+                formatFile(new File(outDir));
+            }
         }
 
         int i = outDir.indexOf("java");
@@ -90,9 +97,20 @@ public abstract class CodeGenerator {
                             .enableRestStyle();
                     builder.mapperBuilder()
                             .enableMapperAnnotation();
+                    builder.addInclude(tableConfig.getIncludeTable());
                 })
                 .templateEngine(new FreemarkerTemplateEngine()) // 使用Freemarker引擎模板，默认的是Velocity引擎模板
                 .execute();
+    }
+
+    private static void formatFile(File file) {
+        removeDir(file);
+        if (!file.isDirectory()) {
+            boolean b = file.mkdirs();
+            if (!b) {
+                throw new IllegalStateException("输出目录异常: " + file.getAbsolutePath());
+            }
+        }
     }
 
     private static void removeDir(File file) {
@@ -109,16 +127,13 @@ public abstract class CodeGenerator {
     }
 
     public static void main(String[] args) {
-        String OUT_DIR = "D:\\workspaces\\wfr\\code-generator\\src\\main\\java\\com\\wfr\\code\\generator\\tmp";
-
-        removeDir(new File(OUT_DIR));
-//        removeDir(new File(MAPPER_OUT_DIR));
+        String OUT_DIR = "/Users/wangfarui/workspaces/wfr/basic-service-platform/platform-web/src/main/java/com/wfr/basic/service/platform/tmp";
 
         DbConfig dbConfig = DbConfig.toBuilder()
                 .setDbType(DbType.MYSQL)
-                .setDatabase("basic_platform")
+                .setDatabase("basic_platform_0")
                 .setHost("localhost")
-                .setPort("3307")
+                .setPort("3306")
                 .setUsername("your")
                 .setPassword("your")
                 .build();
@@ -128,6 +143,10 @@ public abstract class CodeGenerator {
                 .setOutputDir(OUT_DIR)
                 .build();
 
-        generate(dbConfig, globalConfig);
+        TableConfig tableConfig = TableConfig.toBuilder()
+                .addIncludeTable("t_order")
+                .build();
+
+        generate(dbConfig, globalConfig, tableConfig);
     }
 }
