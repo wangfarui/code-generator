@@ -83,7 +83,10 @@ public abstract class CodeGenerator {
                     builder.disableOpenDir()
                             .fileOverride() // 覆盖已生成文件
                             .outputDir(outDir) // 指定输出目录
-                            .enableSwagger();
+                    ;
+                    if (globalConfig.isEnableSwagger()) {
+                        builder.enableSwagger();
+                    }
                 })
                 .packageConfig(builder -> {
                     builder.parent(packageName) // 设置父包名

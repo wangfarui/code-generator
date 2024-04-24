@@ -34,6 +34,11 @@ public class GlobalConfig {
      */
     private String author;
 
+    /**
+     * 开启Swagger注解
+     */
+    private boolean enableSwagger;
+
     public String getOutputDir() {
         return outputDir;
     }
@@ -48,6 +53,10 @@ public class GlobalConfig {
 
     public String getAuthor() {
         return author;
+    }
+
+    public boolean isEnableSwagger() {
+        return enableSwagger;
     }
 
     public static Builder toBuilder() {
@@ -83,6 +92,11 @@ public class GlobalConfig {
 
         public Builder setAuthor(String author) {
             this.globalConfig.author = author;
+            return this;
+        }
+
+        public Builder enableSwagger() {
+            this.globalConfig.enableSwagger = true;
             return this;
         }
 
